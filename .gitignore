@@ -368,6 +368,3 @@ FodyWeavers.xsd
 .claude/
 .vs/
 
-# Binario gerado localmente (a CI gera o exe no runner)
-/XAU.exe
-/info.json
