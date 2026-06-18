@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release name (e.g. V2)'
+        required: true
+        default: 'V2'
+  push:
+    tags:
+      - 'V*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore /p:EnableWindowsTargeting=true
+
+      - name: Build
+        run: dotnet publish XAU.sln -c Release -r win-x64 --self-contained false /p:PublishSingleFile=true /p:PublishReadyToRun=false /p:IncludeAllContentForSelfExtract=true /p:EnableWindowsTargeting=true -o ./publish
+
+      - name: Create or update release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          NAME="${{ github.event.inputs.version || github.ref_name }}"
+          if gh release view "$NAME" >/dev/null 2>&1; then
+            gh release upload "$NAME" ./publish/XAU.exe --clobber
+          else
+            gh release create "$NAME" ./publish/XAU.exe --target "${{ github.sha }}" --title "$NAME" --notes "XAU $NAME"
+          fi
