@@ -1,0 +1,58 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <!-- O TFM do SDK do Windows 10 é necessário para o WAM (WinRT) do pegador de token de evento. -->
+    <TargetFramework>net9.0-windows10.0.19041.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>cirno.ico</ApplicationIcon>
+    <!-- "annotations" mantém as anotações ?/! mas suprime o grande volume de avisos
+         CS86xx pré-existentes (cosmético; volte para "enable" para reativá-los). -->
+    <Nullable>annotations</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Version>2.8.1</Version>
+    <Copyright>Made By Draff ;)</Copyright>
+    <Platforms>AnyCPU;x64</Platforms>
+    <Deterministic>true</Deterministic>
+    <PathMap>$(MSBuildProjectDirectory)=.</PathMap>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="cirno.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2535.41" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.61" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.0-preview.3.24172.9" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    <PackageReference Include="System.Management" Version="9.0.0-preview.3.24172.9" />
+    <PackageReference Include="WPF-UI" Version="3.0.0-preview.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\cirno.png" />
+    <None Remove="Assets\G.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\cirno.png" />
+    <Resource Include="Assets\G.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Util\XboxAuthNet\Platforms\" />
+  </ItemGroup>
+
+</Project>

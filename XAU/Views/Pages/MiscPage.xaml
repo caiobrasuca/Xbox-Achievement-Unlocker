@@ -1,0 +1,213 @@
+<Page
+    x:Class="XAU.Views.Pages.MiscPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:XAU.Views.Pages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="Misc Page"
+    x:Name="MiscPagen"
+    d:DataContext="{d:DesignInstance local:MiscPage,
+                                     IsDesignTimeCreatable=False}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+    ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    mc:Ignorable="d">
+
+    <Grid
+        Height="{Binding ElementName=MiscPagen, Path=ActualHeight}"
+        Width="{Binding ElementName=MiscPagen, Path=ActualWidth}">
+        <TabControl Margin="0,0,0,0">
+            <TabItem IsSelected="True">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon Margin="0,0,6,0" Symbol="XboxController24" />
+                        <TextBlock Text="Spoofer" />
+                    </StackPanel>
+                </TabItem.Header>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Margin="0"  Text="{Binding ViewModel.SpoofingText}"/>
+                    <Button Grid.Row="0" Grid.Column="1" Content="{Binding ViewModel.SpoofingButtonText, IsAsync=true}" HorizontalAlignment="Stretch" Command="{Binding ViewModel.SpooferButtonClickedCommand}" IsEnabled="{Binding ViewModel.IsInitialized}"/>
+                    <ui:TextBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" Margin="0,5,0,0" PlaceholderText="Title ID" Text="{Binding ViewModel.NewSpoofingID, Mode=TwoWay}"/>
+                    <ui:Image 
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Source="{Binding ViewModel.GameImage}"
+                        Height="250"
+                        Width="250"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                    ></ui:Image>
+                    <Label Grid.Row="1" Grid.Column="0" Content="{Binding ViewModel.GameName}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="260,0,0,0" />
+                    <Label Grid.Row="1" Grid.Column="0" Content="{Binding ViewModel.GameTitleID}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="260,20,0,0" />
+                    <Label Grid.Row="1" Grid.Column="0" Content="{Binding ViewModel.GamePFN}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="260,40,0,0" />
+                    <Label Grid.Row="1" Grid.Column="0" Content="{Binding ViewModel.GameType}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="260,60,0,0" />
+                    <Label Grid.Row="1" Grid.Column="0" Content="{Binding ViewModel.GameGamepass}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="260,80,0,0" />
+                    <Label Grid.Row="1" Grid.Column="0" Content="{Binding ViewModel.GameDevices}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="260,100,0,0" />
+                    <Label Grid.Row="1" Grid.Column="0" Content="{Binding ViewModel.GameGamerscore}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="260,120,0,0" />
+                    <Label Grid.Row="1" Grid.Column="0" Content="{Binding ViewModel.GameTime}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="260,140,0,0" />
+
+                </Grid>
+            </TabItem>
+
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon Margin="0,0,6,0" Symbol="Search24" />
+                        <TextBlock Text="Title ID Search" />
+                    </StackPanel>
+                </TabItem.Header>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <ui:Button
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Icon="{ui:SymbolIcon Search24}"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Stretch"
+                        Margin="25,0,0,0"
+                        Command="{Binding ViewModel.SearchGameCommand}"></ui:Button>
+                    <ui:TextBox
+                        x:Name="TitleIdSearchBox"
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        VerticalAlignment="Top"
+                        Margin="0,0,40,0"
+                        ClearButtonEnabled="False"
+                        PlaceholderText="Game"
+                        MinWidth="200"
+                        Text="{Binding ViewModel.TSearchText, Mode=TwoWay}"
+                        KeyDown="TitleIDSearch_OnKeyDown"></ui:TextBox>
+                    <ListBox
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Margin="0,5,0,0"
+                        ItemsSource="{Binding ViewModel.TSearchTitleNames}"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        SelectionChanged="Selector_OnSelectionChanged"></ListBox>
+                    <Label
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Content="{Binding ViewModel.TSearchGameName}"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Margin="5,5,0,0"></Label>
+                    <Label
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Content="Title ID: "
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Margin="5,35,0,0"></Label>
+                    <ui:TextBox
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Left"
+                        Margin="55,27,0,0"
+                        PlaceholderText="Title ID"
+                        Text="{Binding ViewModel.TSearchGameTitleID, Mode=TwoWay}"></ui:TextBox>
+
+                </Grid>
+            </TabItem>
+
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon Margin="0,0,6,0" Symbol="Search24" />
+                        <TextBlock Text="Gamertag Search" />
+                    </StackPanel>
+                </TabItem.Header>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <ui:Button
+                       Grid.Row="0"
+                       Grid.Column="0"
+                       Icon="{ui:SymbolIcon Search24}"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Stretch"
+                       Margin="25,0,0,0"
+                       IsEnabled="{Binding ViewModel.IsInitialized}"
+                       Command="{Binding ViewModel.SearchGamertagCommand}"></ui:Button>
+                                        <ui:TextBox
+                       x:Name="GamertagSearchBox"
+                       Grid.Row="0"
+                       Grid.Column="0"
+                       VerticalAlignment="Top"
+                       Margin="0,0,40,0"
+                       ClearButtonEnabled="False"
+                       PlaceholderText="Gamertag"
+                       MinWidth="200"
+                       Text="{Binding ViewModel.Gamertag, Mode=TwoWay}"
+                       KeyDown="GamertagSearch_OnKeyDown" ></ui:TextBox>
+                        <StackPanel
+                       Grid.Row="1"
+                       Grid.Column="0"
+                       Margin="0,5,0,0"
+                       Orientation="Horizontal"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top">
+                                    <Image
+                           Source="{Binding ViewModel.GamertagImage}"
+                           Height="100"
+                           Width="100"
+                           Margin="5,0,10,0"></Image>
+                        <StackPanel>
+                            <Label Content="{Binding ViewModel.GamertagName}" Margin="0,0,0,5" />
+                            <Label Content="{Binding ViewModel.GamertagScore}" Margin="0,0,0,5" />
+                            <TextBlock Text="XUID: " VerticalAlignment="Center" Margin="0,0,5,0" />
+                            <TextBox Text="{Binding ViewModel.GamertagXuid, Mode=OneWay}" Margin="0,0,0,5" IsReadOnly="True" />
+                            <ui:ToggleSwitch
+                            x:Name="ExcludeZeroGamerscoreToggle"
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="0,10,0,10"
+                            Content="Exclude 0 Gamerscore Games"
+                            IsChecked="{Binding ViewModel.ExcludeZeroGamerscoreGames, Mode=TwoWay}" />
+                            <ui:ToggleSwitch
+                            x:Name="ExcludeXbox360GamesToggle"
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="0,5,0,10"
+                            Content="Exclude Xbox 360 Games"
+                            IsChecked="{Binding ViewModel.ExcludeXbox360Games, Mode=TwoWay}" />
+                            <ui:Button
+                            x:Name="ExportButton"
+                            IsEnabled="{Binding ViewModel.IsInitialized}"
+                            Content="Export Games to CSV"
+                            Icon="{ui:SymbolIcon Save24}"
+                            Click="ExportToCsvButton_Click"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+    </Grid>
+</Page>
