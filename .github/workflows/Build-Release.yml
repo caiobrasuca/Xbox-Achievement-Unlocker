@@ -42,10 +42,10 @@ jobs:
     - name: Stamp version into source
       run: |
         $tag = "${{ steps.ver.outputs.tag }}"
-        $home = "${{github.workspace}}/XAU/ViewModels/Pages/HomeViewModel.cs"
-        $content = Get-Content -Path $home -Raw
+        $homePath = "${{github.workspace}}/XAU/ViewModels/Pages/HomeViewModel.cs"
+        $content = Get-Content -Path $homePath -Raw
         $content = $content -replace 'public static string ToolVersion = "EmptyDevToolVersion";', "public static string ToolVersion = `"$tag`";"
-        Set-Content -Path $home -Value $content
+        Set-Content -Path $homePath -Value $content
         $mwPath = "${{github.workspace}}/XAU/ViewModels/Windows/MainWindowViewModel.cs"
         $mw = Get-Content -Path $mwPath -Raw
         $mw = $mw -replace 'Tool Version: \{System\.Reflection\.Assembly\.GetExecutingAssembly\(\)\.GetName\(\)\.Version\}', "Tool Version: $tag"
