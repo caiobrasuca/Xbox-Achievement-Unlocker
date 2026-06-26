@@ -34,7 +34,7 @@ public class GithubRestApi
         SetDefaultHeaders();
         _httpClient.DefaultRequestHeaders.Add(HeaderNames.Host, Hosts.GitHubApi);
         var responseString =
-            await _httpClient.GetStringAsync("https://api.github.com/repos/Fumo-Unlockers/Xbox-Achievement-unlocker/releases/latest");
+            await _httpClient.GetStringAsync("https://api.github.com/repos/caiobrasuca/Xbox-Achievement-Unlocker/releases/latest");
         return JsonConvert.DeserializeObject<GitHubRelease>(responseString);
     }
 
@@ -45,7 +45,7 @@ public class GithubRestApi
         SetDefaultHeaders();
         _httpClient.DefaultRequestHeaders.Add(HeaderNames.Host, Hosts.GitHubApi);
         var responseString =
-            await _httpClient.GetStringAsync("https://api.github.com/repos/Fumo-Unlockers/Xbox-Achievement-unlocker/releases");
+            await _httpClient.GetStringAsync("https://api.github.com/repos/caiobrasuca/Xbox-Achievement-Unlocker/releases");
         var releases = JsonConvert.DeserializeObject<List<GitHubRelease>>(responseString);
         return releases?.FirstOrDefault(r => r.Prerelease && r.TagName != null);
     }
