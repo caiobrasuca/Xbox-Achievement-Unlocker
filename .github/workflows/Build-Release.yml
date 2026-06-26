@@ -1,0 +1,72 @@
+name: Build Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release tag to build (e.g. v3)'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+
+    - name: Resolve version
+      id: ver
+      shell: bash
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          echo "tag=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+        else
+          echo "tag=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Write commit message to release notes file
+      shell: bash
+      run: git log -1 --pretty=%B > release-body.txt
+
+    - name: Stamp version into source
+      run: |
+        $tag = "${{ steps.ver.outputs.tag }}"
+        $home = "${{github.workspace}}/XAU/ViewModels/Pages/HomeViewModel.cs"
+        $content = Get-Content -Path $home -Raw
+        $content = $content -replace 'public static string ToolVersion = "EmptyDevToolVersion";', "public static string ToolVersion = `"$tag`";"
+        Set-Content -Path $home -Value $content
+        $mwPath = "${{github.workspace}}/XAU/ViewModels/Windows/MainWindowViewModel.cs"
+        $mw = Get-Content -Path $mwPath -Raw
+        $mw = $mw -replace 'Tool Version: \{System\.Reflection\.Assembly\.GetExecutingAssembly\(\)\.GetName\(\)\.Version\}', "Tool Version: $tag"
+        Set-Content -Path $mwPath -Value $mw
+
+    - name: Restore dependencies
+      run: dotnet restore /p:EnableWindowsTargeting=true
+
+    - name: Build
+      run: dotnet publish XAU.sln -c Release -r win-x64 --self-contained false /p:PublishSingleFile=true /p:PublishReadyToRun=false /p:IncludeAllContentForSelfExtract=true /p:EnableWindowsTargeting=true /p:DebugType=none /p:DebugSymbols=false -o ./publish
+
+    - name: Copy .exe file to workspace
+      run: |
+        Remove-Item -Path "${{github.workspace}}/XAU.exe" -ErrorAction Ignore
+        Copy-Item -Path "./publish/XAU.exe" -Destination "${{github.workspace}}/XAU.exe"
+
+    - name: Create GitHub release
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh release create "${{ steps.ver.outputs.tag }}" "${{github.workspace}}/XAU.exe" `
+          --title "${{ steps.ver.outputs.tag }}" `
+          --notes-file release-body.txt `
+          --repo ${{ github.repository }}
